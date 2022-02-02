@@ -1,0 +1,32 @@
+FROM registry.redhat.io/openshift4/driver-toolkit-rhel8:v4.9
+MAINTAINER "phuet@redhat.com"
+WORKDIR /build/
+
+# First update the base container to latest versions of everything
+# RUN yum update -y
+
+# Expecting kmod software version as an input to the build
+ARG KMODVER
+# Grab the software from upstream
+RUN git clone https://github.com/molnars/qlgc-fastlinq.git
+#ADD https://github.com/kmods-via-containers/simple-kmod/archive/${KMODVER}.tar.gz ./file.tar.gz
+#RUN tar -x --strip-components=1 -f ./file.tar.gz
+
+# Expecting kernel version as an input to the build
+ARG KVER
+
+# Note, your host must have access to repos where kernel developement
+# packages can be installed. If it doesn't the following steps will
+# fail
+
+# Prep and build the module
+# RUN sed -i 's/depmod -a/depmod -a $(KVER)/' Makefile
+
+# RUN yum install -y make sudo
+# RUN make buildprep KVER=${KVER} KMODVER=${KMODVER}
+# RUN make all       KVER=${KVER} KMODVER=${KMODVER}
+# RUN make install   KVER=${KVER} KMODVER=${KMODVER}
+
+# ADD kmod-qlgc-fastlinq-8.55.13.0-2.rhel8u4.x86_64.rpm .
+WORKDIR qlgc-fastlinq
+RUN rpm -ivh kmod-qlgc-fastlinq-8.55.13.0-2.rhel8u3.x86_64.rpm
